@@ -27,7 +27,7 @@ MIN_target_Y = MIN_arm_Y
 #no_incr = 20 #define number of increments here - this is also how many datapoints/images will be made for training/verification
 #incr = disp_Z/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
 disp_Y = START_target_Y - MIN_target_Y
-no_incr = 10 #define number of increments here - this is also how many datapoints/images will be made for training/verification
+no_incr = 100 #define number of increments here - this is also how many datapoints/images will be made for training/verification
 incr = disp_Y/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
 
 #Some of the code in the next section is taken from this OpenCV2 tutorial for saving Images:
