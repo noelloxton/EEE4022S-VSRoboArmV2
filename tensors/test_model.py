@@ -10,6 +10,8 @@ import skimage.transform as sktransform
 from keras import models, optimizers, backend
 from keras.layers import core, convolutional, pooling
 
+from matplotlib import pyplot
+
 np.set_printoptions(precision=4)
 
 path = '/home/ghostlini/panda_arm_sim/src/panda_simulation/data_for_nn'
@@ -57,8 +59,8 @@ images_ds = list_ds.map(parse_image)
 train_ds = images_ds.take(80)
 test_ds = images_ds.skip(80)
 
-train_ds = train_ds.batch(2)
-test_ds = test_ds.batch(2)
+train_ds = train_ds.batch(5)
+test_ds = test_ds.batch(5)
 
 print(train_ds)
 print(test_ds)
@@ -81,7 +83,7 @@ model.add(core.Dense(100, activation='relu'))
 model.add(core.Dropout(.25))
 model.add(core.Dense(20, activation='relu'))
 model.add(core.Dense(1))
-model.compile(optimizer=optimizers.Adam(lr=1e-04),loss='mean_squared_error', metrics=['mse','mae'])
+model.compile(optimizer=optimizers.Adam(lr=1e-04),loss='mean_squared_error', metrics=['mse','mae','mape'])
 
 print(model.summary())
 
@@ -89,11 +91,23 @@ print(model.summary())
 
 #print(example[1])
 
-model.fit(train_ds, epochs=3)
+#model.fit(train_ds, epochs=3)
+
+history1 = model.fit(train_ds, epochs=3)
+print(history1.history)
+
+pyplot.plot(history1.history['mse'])
+pyplot.plot(history1.history['mae'])
+pyplot.plot(history1.history['mape'])
+#pyplot.show()
 
 print("evaluate:")
-result = model.evaluate(test_ds)
-dict(zip(model.metrics_names, result))
+#result = model.evaluate(test_ds)
+#dict(zip(model.metrics_names, result))
+
+history2 = model.evaluate(test_ds)
+print(history2)
+
 
 path2 = '/home/ghostlini/panda_arm_sim/src/panda_simulation/visual_servo'
 
