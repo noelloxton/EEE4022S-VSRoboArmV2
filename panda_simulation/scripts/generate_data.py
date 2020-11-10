@@ -13,8 +13,8 @@ import os
 
 #Define global constants for the target start position on target spawn 
 START_target_X = 0.76
-START_target_Y = 0
-START_target_Z = 0.3224
+START_target_Y = 0.47
+START_target_Z = 0.7974
 #Define global constants for the max target and arm parameters 
 MAX_arm_Z = 1.15
 MIN_arm_Z = 0.2
@@ -23,13 +23,13 @@ MAX_arm_Y = START_target_Y
 MIN_arm_Y = -0.5
 MIN_target_Y = MIN_arm_Y
 #Define target increments
-disp_Z = MAX_target_Z - START_target_Z
+#disp_Z = MAX_target_Z - START_target_Z
+#no_incr = 101 #define number of increments here - this is also how many datapoints/images will be made for training/verification
+#incr = disp_Z/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
+#no_incr = 101
+disp_Y = START_target_Y - MIN_target_Y
 no_incr = 101 #define number of increments here - this is also how many datapoints/images will be made for training/verification
-incr = disp_Z/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
-#no_incr = 1000
-#disp_Y = START_target_Y - MIN_target_Y
-#no_incr = 1000 #define number of increments here - this is also how many datapoints/images will be made for training/verification
-#incr = disp_Y/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
+incr = disp_Y/(no_incr-1) #this splits the total z-displacment into increments for the target to move to
 #no_incr = 1000
 #Some of the code in the next section is taken from this OpenCV2 tutorial for saving Images:
 # http://opencv-python-tutroals.readthedocs.org/en/latest/py_tutorials/py_gui/py_image_display/py_image_display.html
@@ -83,14 +83,14 @@ def add_label(z):
 #function to create the images from the ROS simulation
 def create_images():
 
-    new_Z = START_target_Z #+ ((no_incr-100)*incr)#this is used for incrementing target's Z-coord
-    #new_Y = START_target_Y -(900*incr) #this is used for incrementing target's Y-coord
+    #new_Z = START_target_Z #+ ((no_incr-100)*incr)#this is used for incrementing target's Z-coord
+    new_Y = START_target_Y #this is used for decrementing target's Y-coord
     
     #loop number of images you want to save (coincides to # increments)
     for x in range(no_incr):
 
     	#spawn target into gazebo
-	spawnCommand = "rosrun gazebo_ros spawn_model -file ~/catkin_ws/src/arm_description/models/qr_code_target/model.sdf -sdf -model target -x {} -y {} -z {}".format(START_target_X, START_target_Y, new_Z)
+	spawnCommand = "rosrun gazebo_ros spawn_model -file ~/catkin_ws/src/arm_description/models/qr_code_target/model.sdf -sdf -model target -x {} -y {} -z {}".format(START_target_X, new_Y, START_target_Z)
 	os.system(spawnCommand)
 	rospy.sleep(2) #sleep for 1/2s to ensure only 1 image saved
 	#save image and rename it
@@ -101,24 +101,24 @@ def create_images():
 	os.system(renameCommand)
 	
 	#make a file with the title of the z-coord
-	makeCommand = "mkdir {}".format(new_Z-0.1224)#for z
+	#makeCommand = "mkdir {}".format(new_Z-0.1224)#for z
         #make a file with the title of the y-coord
-        #makeCommand = "mkdir -- {}".format(new_Y)       #for y
+        makeCommand = "mkdir -- {}".format(new_Y)       #for y
 	os.system(makeCommand)
 	#move the img to the file
-	moveCommand = "mv {}.jpeg ~/panda_arm_sim/src/panda_simulation/data_for_nn/{}".format(img_name,new_Z-0.1224) #for z
-        #moveCommand = "mv {}.jpeg ~/panda_arm_sim/src/panda_simulation/data_for_nn/{}".format(img_name,new_Y)        #for y
+	#moveCommand = "mv {}.jpeg ~/panda_arm_sim/src/panda_simulation/data_for_nn/{}".format(img_name,new_Z-0.1224) #for z
+        moveCommand = "mv {}.jpeg ~/panda_arm_sim/src/panda_simulation/data_for_nn/{}".format(img_name,new_Y)        #for y
 	os.system(moveCommand)
 	
 	#add the corresponding z-coord to the label file
-	add_label((new_Z - 0.1224))#for Z
+	#add_label((new_Z - 0.1224))#for Z
         #add the corresponding y-coord to the label file
-	#add_label((new_Y))         #for Y
+	add_label((new_Y))         #for Y
 
 	#increment z-coord
-	new_Z += incr
+	#new_Z += incr
         #decrement y-coord
-	#new_Y -= incr
+	new_Y -= incr
 
 	#delete model
 	deleteCommand = "rosservice call gazebo/delete_model '{model_name: target}'"

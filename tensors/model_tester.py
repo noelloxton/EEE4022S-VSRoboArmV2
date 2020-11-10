@@ -17,7 +17,7 @@ from keras.callbacks import EarlyStopping
 from matplotlib import pyplot
 
 np.set_printoptions(precision=4)
-i=1
+i=5
 path = '/home/ghostlini/panda_arm_sim/src/panda_simulation/data_for_nn'
 
 target_root = pathlib.Path(path)
@@ -105,7 +105,7 @@ validate_ds = validate_ds.batch(10)
 #train_ds = train_ds.batch(2)
 #validate_ds = validate_ds.batch(2)
 
-history1 = model.fit(train_ds, epochs=50,validation_data=validate_ds)#, callbacks=[checkpoint])
+history1 = model.fit(train_ds, epochs=50,validation_data=validate_ds, callbacks=[checkpoint])
 
 #loss
 pyplot.plot(history1.history['loss'],label='train_loss')
