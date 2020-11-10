@@ -75,14 +75,18 @@ move_group.stop()
 #We can plan a motion for this group to a desired pose for the end-effector:
 pose_goal = geometry_msgs.msg.Pose()
 #Position
-pose_goal.position.x = 0.11
-pose_goal.position.y = -0.47
-pose_goal.position.z = 0.675
+pose_goal.position.x = 0.2
+pose_goal.position.y = 0.2
+pose_goal.position.z = 0.85
 #Orientation
-pose_goal.orientation.x = -0.000567874271249
-pose_goal.orientation.y = -0.000224426230725
-pose_goal.orientation.z = 0.37552177936
-pose_goal.orientation.w = 0.926813368687
+#pose_goal.orientation.x = -0.000567874271249
+#pose_goal.orientation.y = -0.000224426230725
+#pose_goal.orientation.z = 0.37552177936
+#pose_goal.orientation.w = 0.926813368687
+#pose_goal.orientation.x = -1
+#pose_goal.orientation.y = 0.2
+#pose_goal.orientation.z = 0
+#pose_goal.orientation.w = 0
 
 move_group.set_pose_target(pose_goal)
 
